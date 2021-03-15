@@ -7,10 +7,10 @@ class Trie {
         let currNode = this.root;
 
         for (const letter of word) {
-            if (!currNode.letters[letter]) {
-                currNode.letters[letter] = new Node();
+            if (!currNode.letters.has(letter)) {
+                currNode.letters.set(letter) = new Node();
             }
-            currNode = currNode.letters[letter];
+            currNode = currNode.letters.get(letter);
         }
 
         currNode.endOfWord = true;
@@ -20,18 +20,22 @@ class Trie {
     search(word) {
         let currNode = this.root;
         for (const letter of word) {
-            if (!currNode.letters[letter]) return false;
+            if (!currNode.letters.has(letter)) return false;
 
-            currNode = currNode.letters[letter];
+            currNode = currNode.letters.get(letter);
         }
 
         return currNode.endOfWord;
+    }
+
+    remove(word) {
+
     }
 }
 
 class Node {
     constructor() {
-        this.letters = {};
+        this.letters = new Map();
         this.endOfWord = false;
     }
 }
