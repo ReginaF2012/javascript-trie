@@ -40,7 +40,7 @@ class Trie {
             if (!currNode.children.has(letter)) return words;
             currNode = currNode.children.get(letter);
         }
-        
+
         if (currNode.endOfWord) words.push(prefix);
 
         currNode.children.forEach((child) =>
@@ -65,7 +65,8 @@ class Trie {
     removeWord(word) {
         if (!word) return false;
 
-        let currNode = this.root, stack = [];
+        let currNode = this.root,
+            stack = [];
         for (const letter of word) {
             if (!currNode.children.has(letter)) return false;
             currNode = currNode.children.get(letter);
@@ -77,10 +78,15 @@ class Trie {
         while (stack.length > 0 && !currNode.endOfWord) {
             let prevNode = currNode;
             currNode = stack.pop();
-            if (prevNode.children.size === 0) currNode.children.delete(prevNode.value);
+            if (prevNode.children.size === 0)
+                currNode.children.delete(prevNode.value);
         }
 
         return true;
+    }
+
+    clear() {
+        this.root.children.clear();
     }
 }
 
@@ -92,10 +98,26 @@ class Node {
     }
 }
 
-let trie = new Trie();
-let words = ['am', 'ama', 'amaz', 'amaze', 'amazing']
-words.forEach(word => trie.insert(word));
-console.log(trie.findAllWithPrefix('am'));
-trie.removeWord('amaze');
+function createTrie() {
+    let trie = new Trie();
+    let words = ["ask", "asks", "asked", "asking"];
+    words.forEach((word) => trie.insert(word));
+    return trie;
+}
+
+let trie = createTrie();
+trie.removeWord('ask');
+console.log(trie.findAllWithPrefix('').join() === ["asks", "asked", "asking"].join())
+trie = createTrie();
+trie.removeWord('asks');
+console.log(trie.findAllWithPrefix('').join() === ["ask", "asked", "asking"].join())
+trie = createTrie();
+trie.removeWord('asked');
+console.log(trie.findAllWithPrefix('').join() === ["ask", "asks", "asking"].join())
+trie = createTrie();
+trie.removeWord('asking');
+console.log(trie.findAllWithPrefix('').join() === ["ask", "asks", "asked"].join())
+trie.clear()
 console.log(trie.findAllWithPrefix(''));
+
 
