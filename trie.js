@@ -33,7 +33,6 @@ class Trie {
     }
 
     findAllWithPrefix(prefix, start = this.root) {
-        if (!prefix) return false;
         let words = [],
             currNode = start;
 
@@ -41,6 +40,8 @@ class Trie {
             if (!currNode.children.has(letter)) return words;
             currNode = currNode.children.get(letter);
         }
+        
+        if (currNode.endOfWord) words.push(prefix);
 
         currNode.children.forEach((child) =>
             this.getWordsFrom(child, prefix, words)
@@ -50,7 +51,7 @@ class Trie {
     }
 
     getWordsFrom(node, string, array = []) {
-        if (!node || !string) return;
+        if (!node) return;
 
         string += node.value;
 
@@ -62,7 +63,24 @@ class Trie {
     }
 
     removeWord(word) {
+        if (!word) return false;
 
+        let currNode = this.root, stack = [];
+        for (const letter of word) {
+            if (!currNode.children.has(letter)) return false;
+            currNode = currNode.children.get(letter);
+            if (word[word.length - 1] !== currNode.value) stack.push(currNode);
+        }
+
+        currNode.endOfWord = false;
+
+        while (stack.length > 0 && !currNode.endOfWord) {
+            let prevNode = currNode;
+            currNode = stack.pop();
+            if (prevNode.children.size === 0) currNode.children.delete(prevNode.value);
+        }
+
+        return true;
     }
 }
 
@@ -75,23 +93,9 @@ class Node {
 }
 
 let trie = new Trie();
-trie.insert("cat");
-trie.insert("bet");
-trie.insert("be");
-trie.insert("beaver");
-trie.insert("car");
-trie.insert("canoe");
-trie.insert("cot");
-trie.insert("cranberries");
-// console.log(trie.hasWord('cat'));
-// console.log(trie.hasWord('car'));
-// console.log(trie.hasWord('be'));
-// console.log(trie.hasWord('bet'));
-// console.log(trie.hasWord('cap'));
-console.log('all words that start with "c":', trie.findAllWithPrefix("c"));
-console.log('all words that start with "ca":', trie.findAllWithPrefix("ca"));
-console.log('all words that start with "be":', trie.findAllWithPrefix("be"));
-console.log(
-    'all words that start with: "cran":',
-    trie.findAllWithPrefix("cran")
-);
+let words = ['am', 'ama', 'amaz', 'amaze', 'amazing']
+words.forEach(word => trie.insert(word));
+console.log(trie.findAllWithPrefix('am'));
+trie.removeWord('amaze');
+console.log(trie.findAllWithPrefix(''));
+
