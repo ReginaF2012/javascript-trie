@@ -19,35 +19,37 @@ class Trie {
         return currNode;
     }
 
-    hasWord(word, start = this.root) {
-        if (!word) return false;
-
+    getLastNode(letters, start = this.root) {
         let currNode = start;
-        for (const letter of word) {
+        for (const letter of letters) {
             if (!currNode.children.has(letter)) return false;
 
             currNode = currNode.children.get(letter);
         }
 
-        return currNode.endOfWord;
+        return currNode;
+    }
+
+    hasWord(word, start = this.root) {
+        let node = this.getLastNode(word, start);
+
+        return node && node !== this.root ? node.endOfWord : false;
     }
 
     findAllWithPrefix(prefix, start = this.root) {
-        let words = [],
-            currNode = start;
+        let words = [];
 
-        for (const letter of prefix) {
-            if (!currNode.children.has(letter)) return words;
-            currNode = currNode.children.get(letter);
+        let currNode = this.getLastNode(prefix, start);
+        if (currNode) {
+            if (currNode.endOfWord) words.push(prefix);
+
+            currNode.children.forEach((child) =>
+                this.getWordsFrom(child, prefix, words)
+            );
+
+            return words;
         }
-
-        if (currNode.endOfWord) words.push(prefix);
-
-        currNode.children.forEach((child) =>
-            this.getWordsFrom(child, prefix, words)
-        );
-
-        return words;
+        return false;
     }
 
     getWordsFrom(node, string, array = []) {
@@ -106,18 +108,3 @@ function createTrie() {
 }
 
 let trie = createTrie();
-trie.removeWord('ask');
-console.log(trie.findAllWithPrefix('').join() === ["asks", "asked", "asking"].join())
-trie = createTrie();
-trie.removeWord('asks');
-console.log(trie.findAllWithPrefix('').join() === ["ask", "asked", "asking"].join())
-trie = createTrie();
-trie.removeWord('asked');
-console.log(trie.findAllWithPrefix('').join() === ["ask", "asks", "asking"].join())
-trie = createTrie();
-trie.removeWord('asking');
-console.log(trie.findAllWithPrefix('').join() === ["ask", "asks", "asked"].join())
-trie.clear()
-console.log(trie.findAllWithPrefix(''));
-
-
