@@ -80,8 +80,10 @@ class Trie {
         while (stack.length > 0 && !currNode.endOfWord) {
             let prevNode = currNode;
             currNode = stack.pop();
-            if (prevNode.children.size === 0)
-                currNode.children.delete(prevNode.value);
+            if (prevNode.children.size > 0) {
+                break;
+            }
+            currNode.children.delete(prevNode.value);
         }
 
         return true;
@@ -90,6 +92,7 @@ class Trie {
     clear() {
         this.root.children.clear();
     }
+
 }
 
 class Node {
@@ -102,7 +105,7 @@ class Node {
 
 function createTrie() {
     let trie = new Trie();
-    let words = ["ask", "asks", "asked", "asking"];
+    let words = ["ask", "asks", "asked", "asking", "ache", "ached", "aching", "achoo"];
     words.forEach((word) => trie.insert(word));
     return trie;
 }
