@@ -46,10 +46,9 @@ class Trie {
             currNode.children.forEach((child) =>
                 this.getWordsFrom(child, prefix, words)
             );
-
-            return words;
         }
-        return false;
+
+        return words;
     }
 
     getWordsFrom(node, string, array = []) {
