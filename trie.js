@@ -51,7 +51,7 @@ class Trie {
         return words;
     }
 
-    getWordsFrom(node, string, array = []) {
+    getWordsFrom(node = this.root, string = '', array = []) {
         if (!node) return;
 
         string += node.value;
@@ -61,6 +61,8 @@ class Trie {
         node.children.forEach((child) => {
             this.getWordsFrom(child, string, array);
         });
+        
+        return array;
     }
 
     removeWord(word) {
@@ -110,3 +112,5 @@ function createTrie() {
 }
 
 let trie = createTrie();
+console.log(trie.getWordsFrom());
+console.log('words start with "as":', trie.findAllWithPrefix('as'));
